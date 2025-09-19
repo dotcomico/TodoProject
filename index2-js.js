@@ -42,8 +42,8 @@ let formBackgrounds = [
   PATH + "lights.jpg",
   PATH + "broadcast.jpg",
 ];
-mainBgCount = localStorage.getItem("mainBgIndex") || 0;
-formBgCount = localStorage.getItem("formBgIndex") || 0;
+let mainBgCount = parseInt(localStorage.getItem("mainBgIndex")) || 0;
+let formBgCount = parseInt(localStorage.getItem("formBgIndex")) || 0;
 mainBgSelect.style.backgroundImage = `url(${mainBackgrounds[mainBgCount]})`;
 formBgSelect.style.backgroundImage = `url(${formBackgrounds[formBgCount]})`;
 setMainBackground();
@@ -72,7 +72,7 @@ closeSideBarBtn.addEventListener("click", () => {
   sideBar.style.display = "none";
 });
 mainBgSelect.addEventListener("click", () => {
-  if (mainBgCount === mainBackgrounds.length - 1) {
+  if (mainBgCount >= mainBackgrounds.length - 1) {
     mainBgCount = 0;
   } else {
     mainBgCount++;
@@ -81,7 +81,7 @@ mainBgSelect.addEventListener("click", () => {
   setMainBackground();
 });
 formBgSelect.addEventListener("click", () => {
-  if (formBgCount === formBackgrounds.length - 1) {
+  if (formBgCount >= formBackgrounds.length - 1) {
     formBgCount = 0;
   } else {
     formBgCount++;
@@ -302,9 +302,9 @@ function startRandomColorChange2(view) {
 }
 function setMainBackground(){
   document.body.style.backgroundImage = `url(${mainBackgrounds[mainBgCount]})`;
-  localStorage.setItem("mainBgIndex" , +mainBgCount);
+  localStorage.setItem("mainBgIndex" , parseInt(mainBgCount));
 }
 function setFormBackground(){
   formContainer.style.backgroundImage = `url(${formBackgrounds[formBgCount]})`;
-  localStorage.setItem("formBgIndex" , +formBgCount);
+  localStorage.setItem("formBgIndex" , parseInt(formBgCount));
 }
