@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מנהל משימות מתקדם</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #3b82f6;
+            --secondary-color: #1e293b;
+            --accent-color: #f59e0b;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+            --background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --shadow-light: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-medium: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --shadow-heavy: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            --border-radius: 16px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        [data-theme="dark"] {
+            --text-primary: #f9fafb;
+            --text-secondary: #d1d5db;
+            --glass-bg: rgba(0, 0, 0, 0.2);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            height: 100%;
+            font-family: 'Heebo', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--background);
+            background-attachment: fixed;
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 2rem;
+            backdrop-filter: blur(20px);
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            margin: 1rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-light);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .logo .emoji {
+            font-size: 3rem;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        .header-controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .control-btn {
+            width: 50px;
+            height: 50px;
+            border: none;
+            border-radius: 50%;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            color: white;
+            font-size: 1.25rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .control-btn:hover {
+            transform: scale(1.1) rotate(5deg);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Task Form */
+        .form-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .task-form {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            box-shadow: var(--shadow-medium);
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 1rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 1rem;
+            align-items: end;
+        }
+
+        .input-field {
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid transparent;
+            border-radius: 12px;
+            padding: 1rem;
+            font-size: 1.1rem;
+            font-family: inherit;
+            transition: var(--transition);
+            color: var(--text-primary);
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .input-field::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .color-selector {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .color-option {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 3px solid transparent;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .color-option:hover, .color-option.selected {
+            transform: scale(1.2);
+            border-color: white;
+            box-shadow: var(--shadow-light);
+        }
+
+        .priority-selector {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .priority-btn {
+            padding: 0.5rem 1rem;
+            border: 2px solid transparent;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+
+        .priority-btn:hover, .priority-btn.selected {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-light);
+        }
+
+        .priority-btn.low { border-color: var(--success-color); }
+        .priority-btn.medium { border-color: var(--warning-color); }
+        .priority-btn.high { border-color: var(--danger-color); }
+
+        .submit-btn {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-heavy);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Search and Filter */
+        .controls-bar {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .search-input {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .filter-btn {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Tasks Grid */
+        .tasks-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .tasks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            padding: 1rem 0;
+        }
+
+        /* Task Card */
+        .task-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            position: relative;
+            transition: var(--transition);
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .task-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--task-color, var(--primary-color));
+        }
+
+        .task-card:hover {
+            transform: translateY(-5px) rotate(1deg);
+            box-shadow: var(--shadow-heavy);
+        }
+
+        .task-card.completed {
+            opacity: 0.7;
+        }
+
+        .task-card.completed .task-text {
+            text-decoration: line-through;
+        }
+
+        .task-card.overdue {
+            border-color: var(--danger-color);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .priority-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .priority-badge.low { background: var(--success-color); color: white; }
+        .priority-badge.medium { background: var(--warning-color); color: white; }
+        .priority-badge.high { background: var(--danger-color); color: white; }
+
+        .task-actions {
+            display: flex;
+            gap: 0.5rem;
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .task-card:hover .task-actions {
+            opacity: 1;
+        }
+
+        .action-btn {
+            width: 32px;
+            height: 32px;
+            border: none;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .action-btn:hover {
+            transform: scale(1.2);
+        }
+
+        .action-btn.complete { background: var(--success-color); }
+        .action-btn.delete { background: var(--danger-color); }
+
+        .task-text {
+            color: white;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            word-wrap: break-word;
+        }
+
+        .task-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .task-date {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* History Panel */
+        .history-panel {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            height: 100vh;
+            background: var(--glass-bg);
+            backdrop-filter: blur(30px);
+            border-left: 1px solid var(--glass-border);
+            transition: var(--transition);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .history-panel.open {
+            right: 0;
+        }
+
+        .history-header {
+            padding: 2rem;
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .history-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        .close-history {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+
+        .close-history:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: rotate(90deg);
+        }
+
+        .history-content {
+            padding: 1rem;
+        }
+
+        .history-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            color: white;
+        }
+
+        /* Notifications */
+        .notification {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            background: var(--success-color);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow-heavy);
+            transform: translateX(400px);
+            transition: var(--transition);
+            z-index: 1001;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.error {
+            background: var(--danger-color);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .empty-state .icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .empty-state h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .logo {
+                font-size: 2rem;
+            }
+
+            .task-form {
+                grid-template-columns: 1fr;
+                padding: 1rem;
+            }
+
+            .form-row {
+                flex-direction: column;
+            }
+
+            .controls-bar {
+                flex-direction: column;
+            }
+
+            .tasks-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .history-panel {
+                width: 100vw;
+                right: -100vw;
+            }
+        }
+
+        /* Animations */
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .slide-up {
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">
+            <span class="emoji">📝</span>
+            <span>מנהל משימות מתקדם</span>
+        </div>
+        <div class="header-controls">
+            <button class="control-btn" id="theme-toggle" title="מצב כהה/בהיר">
+                <i class="bi bi-moon-fill"></i>
+            </button>
+            <button class="control-btn" id="history-btn" title="היסטוריה">
+                <i class="bi bi-clock-history"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Task Form -->
+    <div class="form-container">
+        <form class="task-form" id="task-form">
+            <div class="form-group">
+                <input type="text" class="input-field" id="task-input" placeholder="מה המשימה שלך?" required>
+                
+                <div class="form-row">
+                    <input type="date" class="input-field" id="date-input">
+                    <input type="time" class="input-field" id="time-input">
+                </div>
+
+                <div class="form-row">
+                    <div>
+                        <label style="color: white; margin-bottom: 0.5rem; display: block;">צבע:</label>
+                        <div class="color-selector">
+                            <div class="color-option selected" data-color="#3b82f6" style="background: #3b82f6;"></div>
+                            <div class="color-option" data-color="#ef4444" style="background: #ef4444;"></div>
+                            <div class="color-option" data-color="#10b981" style="background: #10b981;"></div>
+                            <div class="color-option" data-color="#f59e0b" style="background: #f59e0b;"></div>
+                            <div class="color-option" data-color="#8b5cf6" style="background: #8b5cf6;"></div>
+                            <div class="color-option" data-color="#ec4899" style="background: #ec4899;"></div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label style="color: white; margin-bottom: 0.5rem; display: block;">עדיפות:</label>
+                        <div class="priority-selector">
+                            <button type="button" class="priority-btn low" data-priority="low">נמוכה</button>
+                            <button type="button" class="priority-btn medium selected" data-priority="medium">בינונית</button>
+                            <button type="button" class="priority-btn high" data-priority="high">גבוהה</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn">
+                <i class="bi bi-plus-circle"></i>
+                הוסף משימה
+            </button>
+        </form>
+    </div>
+
+    <!-- Search and Filter Controls -->
+    <div class="controls-bar">
+        <input type="text" class="input-field search-input" id="search-input" placeholder="חפש משימות...">
+        <button class="filter-btn active" data-filter="all">הכל</button>
+        <button class="filter-btn" data-filter="pending">בהמתנה</button>
+        <button class="filter-btn" data-filter="completed">הושלמו</button>
+        <button class="filter-btn" data-filter="overdue">באיחור</button>
+    </div>
+
+    <!-- Tasks Container -->
+    <div class="tasks-container">
+        <div class="tasks-grid" id="tasks-grid">
+            <!-- Empty State -->
+            <div class="empty-state" id="empty-state">
+                <div class="icon">📝</div>
+                <h3>אין משימות עדיין</h3>
+                <p>הוסף את המשימה הראשונה שלך למעלה</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- History Panel -->
+    <div class="history-panel" id="history-panel">
+        <div class="history-header">
+            <h2 class="history-title">היסטורית משימות</h2>
+            <button class="close-history" id="close-history">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+        <div class="history-content" id="history-content">
+            <!-- History items will be added here -->
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div class="notification" id="notification"></div>
+
+    <script>
+        class TodoApp {
+            constructor() {
+                this.tasks = this.loadTasks();
+                this.history = this.loadHistory();
+                this.currentFilter = 'all';
+                this.selectedColor = '#3b82f6';
+                this.selectedPriority = 'medium';
+                
+                this.initializeElements();
+                this.attachEventListeners();
+                this.renderTasks();
+                this.updateEmptyState();
+            }
+
+            initializeElements() {
+                this.form = document.getElementById('task-form');
+                this.taskInput = document.getElementById('task-input');
+                this.dateInput = document.getElementById('date-input');
+                this.timeInput = document.getElementById('time-input');
+                this.tasksGrid = document.getElementById('tasks-grid');
+                this.searchInput = document.getElementById('search-input');
+                this.historyPanel = document.getElementById('history-panel');
+                this.historyContent = document.getElementById('history-content');
+                this.notification = document.getElementById('notification');
+                this.emptyState = document.getElementById('empty-state');
+                
+                // Set default date to today
+                const today = new Date();
+                this.dateInput.value = today.toISOString().split('T')[0];
+            }
+
+            attachEventListeners() {
+                // Form submission
+                this.form.addEventListener('submit', (e) => this.handleSubmit(e));
+                
+                // Color selection
+                document.querySelectorAll('.color-option').forEach(option => {
+                    option.addEventListener('click', (e) => this.selectColor(e));
+                });
+                
+                // Priority selection
+                document.querySelectorAll('.priority-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => this.selectPriority(e));
+                });
+                
+                // Search
+                this.searchInput.addEventListener('input', (e) => this.handleSearch(e));
+                
+                // Filter buttons
+                document.querySelectorAll('.filter-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => this.setFilter(e));
+                });
+                
+                // Theme toggle
+                document.getElementById('theme-toggle').addEventListener('click', () => this.toggleTheme());
+                
+                // History panel
+                document.getElementById('history-btn').addEventListener('click', () => this.openHistory());
+                document.getElementById('close-history').addEventListener('click', () => this.closeHistory());
+                
+                // Keyboard shortcuts
+                document.addEventListener('keydown', (e) => this.handleKeyboard(e));
+            }
+
+            handleSubmit(e) {
+                e.preventDefault();
+                
+                const text = this.taskInput.value.trim();
+                if (!text) {
+                    this.showNotification('נא להזין טקסט למשימה', 'error');
+                    return;
+                }
+
+                const task = {
+                    id: Date.now(),
+                    text: text,
+                    date: this.dateInput.value,
+                    time: this.timeInput.value,
+                    color: this.selectedColor,
+                    priority: this.selectedPriority,
+                    completed: false,
+                    createdAt: new Date().toISOString()
+                };
+
+                this.tasks.unshift(task);
+                this.saveTasks();
+                this.addToHistory('נוצרה', task);
+                this.renderTasks();
+                this.updateEmptyState();
+                this.form.reset();
+                this.dateInput.value = new Date().toISOString().split('T')[0];
+                this.showNotification('המשימה נוספה בהצלחה!');
+            }
+
+            selectColor(e) {
+                document.querySelectorAll('.color-option').forEach(opt => opt.classList.remove('selected'));
+                e.target.classList.add('selected');
+                this.selectedColor = e.target.dataset.color;
+            }
+
+            selectPriority(e) {
+                e.preventDefault();
+                document.querySelectorAll('.priority-btn').forEach(btn => btn.classList.remove('selected'));
+                e.target.classList.add('selected');
+                this.selectedPriority = e.target.dataset.priority;
+            }
+
+            handleSearch(e) {
+                const query = e.target.value.toLowerCase();
+                const filteredTasks = this.tasks.filter(task => 
+                    task.text.toLowerCase().includes(query)
+                );
+                this.renderTasks(filteredTasks);
+            }
+
+            setFilter(e) {
+                document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+                e.target.classList.add('active');
+                this.currentFilter = e.target.dataset.filter;
+                this.renderTasks();
+            }
+
+            renderTasks(customTasks = null) {
+                const tasks = customTasks || this.getFilteredTasks();
+                
+                // Clear existing tasks (but keep empty state)
+                const existingTasks = this.tasksGrid.querySelectorAll('.task-card');
+                existingTasks.forEach(task => task.remove());
+
+                if (tasks.length === 0) {
+                    this.updateEmptyState();
+                    return;
+                }
+
+                this.emptyState.style.display = 'none';
+
+                tasks.forEach((task, index) => {
+                    const taskCard = this.createTaskCard(task);
+                    taskCard.style.setProperty('--task-color', task.color);
+                    taskCard.classList.add('fade-in');
+                    taskCard.style.animationDelay = `${index * 0.1}s`;
+                    this.tasksGrid.appendChild(taskCard);
+                });
+            }
+
+            createTaskCard(task) {
+                const isOverdue = this.isOverdue(task);
+                const card = document.createElement('div');
+                card.className = `task-card ${task.completed ? 'completed' : ''} ${isOverdue ? 'overdue' : ''}`;
+                
+                const priorityText = { low: 'נמוכה', medium: 'בינונית', high: 'גבוהה' };
+                const dateTime = this.formatDateTime(task.date, task.time);
+
+                card.innerHTML = `
+                    <div class="task-header">
+                        <div class="priority-badge ${task.priority}">${priorityText[task.priority]}</div>
+                        <div class="task-actions">
+                            <button class="action-btn complete" onclick="app.toggleTask(${task.id})" title="${task.completed ? 'בטל השלמה' : 'סמן כהושלם'}">
+                                <i class="bi bi-${task.completed ? 'arrow-clockwise' : 'check-lg'}"></i>
+                            </button>
+                            <button class="action-btn delete" onclick="app.deleteTask(${task.id})" title="מחק משימה">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="task-text">${task.text}</div>
+                    
+                    <div class="task-meta">
+                        <div class="task-date">
+                            <i class="bi bi-calendar"></i>
+                            <span>${dateTime}</span>
+                            ${isOverdue ? '<i class="bi bi-exclamation-triangle" style="color: var(--danger-color);"></i>' : ''}
+                        </div>
+                    </div>
+                `;
+
+                return card;
+            }
+
+            toggleTask(id) {
+                const task = this.tasks.find(t => t.id === id);
+                if (task) {
+                    task.completed = !task.completed;
+                    this.saveTasks();
+                    this.addToHistory(task.completed ? 'הושלמה' : 'בוטלה השלמה', task);
+                    this.renderTasks();
+                    this.showNotification(task.completed ? 'המשימה הושלמה!' : 'ההשלמה בוטלה');
+                }
+            }
+
+            deleteTask(id) {
+                if (confirm('האם אתה בטוח שברצונך למחוק את המשימה?')) {
+                    const taskIndex = this.tasks.findIndex(t => t.id === id);
+                    if (taskIndex > -1) {
+                        const task = this.tasks[taskIndex];
+                        this.tasks.splice(taskIndex, 1);
+                        this.saveTasks();
+                        this.addToHistory('נמחקה', task);
+                        this.renderTasks();
+                        this.updateEmptyState();
+                        this.showNotification('המשימה נמחקה');
+                    }
+                }
+            }
+
+            getFilteredTasks() {
+                let filtered = [...this.tasks];
+                
+                switch (this.currentFilter) {
+                    case 'completed':
+                        filtered = filtered.filter(task => task.completed);
+                        break;
+                    case 'pending':
+                        filtered = filtered.filter(task => !task.completed);
+                        break;
+                    case 'overdue':
+                        filtered = filtered.filter(task => this.isOverdue(task) && !task.completed);
+                        break;
+                    default:
+                        break;
+                }
+                
+                return filtered.sort((a, b) => {
+                    // Sort by priority first, then by date
+                    const priorityOrder = { high: 3, medium: 2, low: 1 };
+                    if (priorityOrder[a.priority] !== priorityOrder[b.priority]) {
+                        return priorityOrder[b.priority] - priorityOrder[a.priority];
+                    }
+                    return new Date(b.createdAt) - new Date(a.createdAt);
+                });
+            }
+
+            isOverdue(task) {
+                if (!task.date) return false;
+                
+                const now = new Date();
+                const taskDateTime = new Date(`${task.date}T${task.time || '23:59'}`);
+                return taskDateTime < now && !task.completed;
+            }
+
+            formatDateTime(date, time) {
+                if (!date) return 'ללא תאריך';
+                
+                const taskDate = new Date(`${date}T${time || '00:00'}`);
+                const now = new Date();
+                const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                const taskDateOnly = new Date(taskDate.getFullYear(), taskDate.getMonth(), taskDate.getDate());
+                
+                const daysDiff = Math.floor((taskDateOnly - today) / (1000 * 60 * 60 * 24));
+                
+                let dateStr;
+                if (daysDiff === 0) {
+                    dateStr = 'היום';
+                } else if (daysDiff === 1) {
+                    dateStr = 'מחר';
+                } else if (daysDiff === -1) {
+                    dateStr = 'אתמול';
+                } else if (daysDiff > 0 && daysDiff < 7) {
+                    dateStr = taskDate.toLocaleDateString('he-IL', { weekday: 'long' });
+                } else {
+                    dateStr = taskDate.toLocaleDateString('he-IL');
+                }
+                
+                if (time) {
+                    const timeStr = taskDate.toLocaleTimeString('he-IL', { 
+                        hour: '2-digit', 
+                        minute: '2-digit' 
+                    });
+                    return `${dateStr}, ${timeStr}`;
+                }
+                
+                return dateStr;
+            }
+
+            toggleTheme() {
+                const body = document.body;
+                const themeIcon = document.querySelector('#theme-toggle i');
+                
+                if (body.dataset.theme === 'dark') {
+                    body.removeAttribute('data-theme');
+                    themeIcon.className = 'bi bi-moon-fill';
+                    localStorage.setItem('theme', 'light');
+                } else {
+                    body.dataset.theme = 'dark';
+                    themeIcon.className = 'bi bi-sun-fill';
+                    localStorage.setItem('theme', 'dark');
+                }
+            }
+
+            openHistory() {
+                this.renderHistory();
+                this.historyPanel.classList.add('open');
+            }
+
+            closeHistory() {
+                this.historyPanel.classList.remove('open');
+            }
+
+            renderHistory() {
+                this.historyContent.innerHTML = '';
+                
+                if (this.history.length === 0) {
+                    this.historyContent.innerHTML = `
+                        <div class="empty-state">
+                            <div class="icon">📜</div>
+                            <h3>אין היסטוריה עדיין</h3>
+                            <p>פעילויות על משימות יופיעו כאן</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                this.history.forEach(item => {
+                    const historyItem = document.createElement('div');
+                    historyItem.className = 'history-item';
+                    historyItem.innerHTML = `
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
+                            <span style="font-weight: 600; color: var(--accent-color);">${item.action}</span>
+                            <small style="opacity: 0.7;">${new Date(item.timestamp).toLocaleString('he-IL')}</small>
+                        </div>
+                        <div style="font-size: 0.9rem; opacity: 0.8;">${item.task.text}</div>
+                    `;
+                    this.historyContent.appendChild(historyItem);
+                });
+            }
+
+            addToHistory(action, task) {
+                const historyItem = {
+                    action,
+                    task: { ...task },
+                    timestamp: new Date().toISOString()
+                };
+                
+                this.history.unshift(historyItem);
+                
+                // Keep only last 50 items
+                if (this.history.length > 50) {
+                    this.history = this.history.slice(0, 50);
+                }
+                
+                this.saveHistory();
+            }
+
+            showNotification(message, type = 'success') {
+                this.notification.textContent = message;
+                this.notification.className = `notification ${type} show`;
+                
+                setTimeout(() => {
+                    this.notification.classList.remove('show');
+                }, 3000);
+            }
+
+            updateEmptyState() {
+                const hasTasks = this.tasks.length > 0;
+                this.emptyState.style.display = hasTasks ? 'none' : 'block';
+            }
+
+            handleKeyboard(e) {
+                if (e.ctrlKey || e.metaKey) {
+                    switch (e.key) {
+                        case 'k':
+                            e.preventDefault();
+                            this.searchInput.focus();
+                            break;
+                        case 'h':
+                            e.preventDefault();
+                            this.openHistory();
+                            break;
+                    }
+                }
+                
+                if (e.key === 'Escape') {
+                    this.closeHistory();
+                    this.searchInput.blur();
+                }
+            }
+
+            loadTasks() {
+                const saved = localStorage.getItem('todo_tasks');
+                return saved ? JSON.parse(saved) : [];
+            }
+
+            saveTasks() {
+                localStorage.setItem('todo_tasks', JSON.stringify(this.tasks));
+            }
+
+            loadHistory() {
+                const saved = localStorage.getItem('todo_history');
+                return saved ? JSON.parse(saved) : [];
+            }
+
+            saveHistory() {
+                localStorage.setItem('todo_history', JSON.stringify(this.history));
+            }
+
+            // Initialize theme
+            initializeTheme() {
+                const savedTheme = localStorage.getItem('theme');
+                if (savedTheme === 'dark') {
+                    document.body.dataset.theme = 'dark';
+                    document.querySelector('#theme-toggle i').className = 'bi bi-sun-fill';
+                }
+            }
+        }
+
+        // Initialize app
+        const app = new TodoApp();
+        
+        // Initialize theme on load
+        document.addEventListener('DOMContentLoaded', () => {
+            app.initializeTheme();
+        });
+
+        // Auto-save functionality
+        setInterval(() => {
+            app.saveTasks();
+            app.saveHistory();
+        }, 30000); // Auto-save every 30 seconds
+
+        // Service Worker for offline functionality (optional)
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js').catch(() => {
+                // Service worker not available, continue without it
+            });
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>index</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            height: 100%;
+             background-size: cover;
+             background-repeat: no-repeat;
+             background-attachment: fixed;
+        }
+
+        html {
+            /* background-image: url('images/backgrounds/leaves.jpg'); */
+            background-size: cover;
+        }
+
+
+        h1 {
+            text-align: center;
+            color: white;
+            font-size: 60px;
+            transition: 0.3s;
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        }
+
+        h1:hover {
+            transform: scaleY(1.7);
+        }
+
+        #historyBtn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            border: 1px solid teal;
+            border-radius: 50%;
+            width: 70px;
+            height: 70px;
+            background-color: white;
+            color: teal;
+
+            font-size: 40px;
+            transition: 0.2s;
+
+        }
+
+        #historyBtn:hover {
+            transform: scale(1.1);
+        }
+
+        #form-container {
+            display: flex;
+            justify-content: center;
+            margin: auto;
+            /* background-image: url('images/backgrounds/grid.png'); */
+            background-size: cover;
+            border: 1px solid grey;
+            border-radius: 25px;
+            max-width: 800px;
+        }
+
+        #task-form {
+            border-radius: 25px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0;
+            padding: 15px;
+            text-align: left;
+            width: 100%;
+            height: 100%;
+        }
+
+        #form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 10px;
+            align-items: start;
+        }
+
+        #task-input {
+            direction: auto;
+            unicode-bidi: plaintext;
+        }
+
+        .inputs {
+            background: white;
+            border: 2px solid lightgray;
+            border-radius: 12px;
+            padding: 10px;
+            font-size: 20px;
+        }
+
+        label {
+            color: black;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        #color-picker {
+            width: 40px;
+            height: 40px;
+            background-color: yellow;
+            border: 1px, solid, transparent;
+            border-radius: 50%;
+            margin: 3px;
+            transition: 0.1s;
+            cursor: pointer;
+        }
+
+        #color-picker:hover {
+            border: 2px, solid, rgb(255, 255, 255);
+            transform: scale(1.1);
+        }
+
+        #reset-form {
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        #reset-form:hover {
+            transform: scale(1.1);
+        }
+
+        #save-form {
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        #save-form:hover {
+            transform: scale(1.01);
+        }
+
+        /* חיפוש */
+        .controls-bar {
+            max-width: 800px;
+            margin: auto;
+            padding: 10px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .search-input {
+            width: 60%;
+            min-width: 200px;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: rgba(255, 255, 255, 0.378);
+            transform: translateY(-2px);
+        }
+
+        .filter-btn {
+            background: rgba(89, 89, 89, 0.412);
+            border: 1px solid black;
+            color: white;
+            padding: 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        /* קונטיינר */
+        #flex-container {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: center;
+            width: fit-content;
+            gap: 5px;
+            padding: 10px;
+            /* background-color: aqua; */
+        }
+
+        .note {
+            position: relative;
+            /* background-image: url('images/notebg.png'); */
+            background-size: cover;
+            height: 300px;
+            width: 250px;
+            transition: 0.3s;
+            padding: 15px;
+            padding-top: 35px;
+            padding-right: 20px;
+        }
+
+        .note p {
+            width: 93%;
+            height: 69%;
+            font-size: 23px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            scrollbar-width: thin;
+            overflow-wrap: break-word;
+            direction: auto;
+            unicode-bidi: plaintext;
+            /* text-align: center; */
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .note div {
+            height: 10%;
+            font-size: 17px;
+        }
+
+        .note .delete-icon {
+            position: absolute;
+            top: 25px;
+            right: 35px;
+            opacity: 0;
+
+            font-size: 24px;
+            height: 30px;
+            width: 30px;
+            margin: 0;
+            padding: 0;
+            cursor: pointer;
+        }
+
+        .note .vi {
+            position: absolute;
+            bottom: 30px;
+            right: 50px;
+            opacity: 0;
+
+            font-size: 24px;
+            height: 35px;
+            width: 35px;
+            margin: 0;
+            padding: 0;
+            cursor: pointer;
+
+            border: 1px solid black;
+            border-radius: 50%;
+            background-color: rgb(0, 198, 0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+        }
+
+        .note:hover {
+            transform: scale(1.03);
+        }
+
+        .note:hover i {
+            opacity: 1;
+        }
+
+        .historyCard {
+            position: fixed;
+            top: 20px;
+            right: 0px;
+
+            width: 20%;
+            height: 96%;
+            border: 2px solid teal;
+            background-color: white;
+            border-top-left-radius: 25px;
+            border-bottom-left-radius: 25px;
+        }
+
+        .historyCard p {
+            text-align: center;
+            font-size: 25px;
+        }
+
+        .historyCard hr {
+            width: 75%;
+            height: 3px;
+            background-color: black;
+            size: 2px;
+        }
+
+        .historyContainer {
+            width: 100%;
+            padding: 10px;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 100%;
+            background-color: #ffffff00;
+            height: 60px;
+            padding: 20px;
+        }
+
+        .top-bar i {
+            font-size: 32px;
+            color: white;
+            background-color: teal;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        #setting-icon {
+            transition: 0.5s;
+        }
+
+        #setting-icon:hover {
+            transform: rotate(180deg);
+        }
+
+        .side-bar {
+            height: 100%;
+            position: fixed;
+            max-width: 300px;
+            min-width: 200px;
+            background-color: #ffffff;
+            border-top-left-radius: 25px;
+            border-bottom-left-radius: 25px;
+            border-left: 1px solid rgb(152, 152, 152);
+            top: 0;
+            right: 0;
+            display: none;
+            padding: 8px;
+            text-align: left;
+            z-index: 1000;
+        }
+
+        #close-side-bar-btn {
+            cursor: pointer;
+            font-size: 30px;
+            color: black;
+            transition: 0.3s;
+            margin: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            position: fixed;
+        }
+
+        #close-side-bar-btn:hover {
+            font-size: 35px;
+        }
+
+        #main-bg-select {
+            position: relative;
+            background-color: rgb(231, 231, 231);
+            border: 1px solid rgb(98, 98, 98);
+            border-radius: 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 230px;
+            height: 150px;
+            background-size: cover;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        #main-bg-select:hover {
+            transform: scale(1.01);
+        }
+
+        #form-bg-select {
+            position: absolute;
+            background-color: gray;
+            border: 2px solid rgb(98, 98, 98);
+            border-radius: 16px;
+            width: 115px;
+            height: 60px;
+            background-size: cover;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        #form-bg-select:hover {
+            transform: scale(1.02);
+        }
+
+        .center-flex {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: left;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="top-bar">
+        <h1 id="hading">Todo✏️</h1>
+        <i class="bi bi-gear-fill" id="setting-icon"></i>
+    </div>
+
+    <div class="side-bar" id="side-bar">
+        <i class="bi bi-x-lg" id="close-side-bar-btn"></i>
+        <div style="margin: 100px;">
+            Backgrounds: <br>
+            <div class="center-flex">
+                <div id="main-bg-select"></div>
+                <div id="form-bg-select"></div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div id="form-container">
+        <form action="" id="task-form">
+            <div id="form-group">
+                <input type="text" name="text" placeholder="What's your task?" class="inputs" id="task-input">
+
+                <div class="form-row">
+                    <input type="date" name="date" class="inputs" id="date-input"> <br>
+                    <input type="time" name="time" class="inputs" id="time-input"> <br>
+                </div>
+                <div class="form-row">
+                    <div>
+                        <label for="color-picker">Color:</label>
+                        <input type="button" name="button" id="color-picker">
+                    </div>
+                    <div>
+                        <label for="priority">Priority:</label>
+                        <select name="" class="inputs" id="priority">
+                            <option value="low">Low</option>
+                            <option value="avareg">Avrege</option>
+                            <option value="hige">High</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div style="grid-column: span 3; margin-top: 10px;">
+                <input type="button" name="button" value="Save" id="save-form"
+                    style="width: 90%; border-radius: 25px; font-size: 25px;">
+                <input type="reset" name="reset" id="reset-form" value="X"
+                    style="width: 9%; color: white; background-color: red; border-radius: 25px; font-size: 25px;">
+            </div>
+        </form>
+    </div>
+
+    <div class="controls-bar">
+        <input type="text" class="inputs search-input" id="search-input" placeholder="Search..." fdprocessedid="ddtkp">
+        <button class="filter-btn active" id="all" fdprocessedid="6y1v7u">All</button>
+        <button class="filter-btn" id="pending" fdprocessedid="dchpeh">Pending</button>
+        <button class="filter-btn" id="completed" fdprocessedid="ya0wzkp">Completed</button>
+    </div>
+
+    <div id="flex-container"></div>
+    <script src="index2-js.js"></script>
+</body>
+
+</html>

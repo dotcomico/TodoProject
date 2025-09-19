@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sidebar Example</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    /* הכפתור לפתיחה */
+    .open-btn {
+      font-size: 20px;
+      cursor: pointer;
+      background-color: #333;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+    }
+
+    /* הסיידבר */
+    .sidebar {
+      height: 100%;             /* כל הגובה */
+      width: 0;                 /* בהתחלה סגור */
+      position: fixed;
+      top: 0;
+      right: 0;                 /* בצד ימין, אם תרצה צד שמאל שים left:0 */
+      background-color: #111;
+      overflow-x: hidden;
+      transition: 0.3s;
+      padding-top: 60px;        /* רווח מלמעלה */
+    }
+
+    .sidebar a {
+      display: block;
+      padding: 10px 20px;
+      text-decoration: none;
+      font-size: 18px;
+      color: white;
+      transition: 0.2s;
+    }
+
+    .sidebar a:hover {
+      background-color: #575757;
+    }
+
+    /* כפתור סגירה */
+    .close-btn {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      font-size: 30px;
+      color: white;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- כפתור לפתיחה -->
+  <button class="open-btn" onclick="openSidebar()">☰ פתח תפריט</button>
+
+  <!-- הסיידבר -->
+  <div id="mySidebar" class="sidebar">
+    <span class="close-btn" onclick="closeSidebar()">×</span>
+    <a href="#">דף הבית</a>
+    <a href="#">פרופיל</a>
+    <a href="#">הגדרות</a>
+    <a href="#">התנתק</a>
+  </div>
+
+  <div style="padding:20px;">
+    <h1>תוכן האתר</h1>
+    <p>כאן יש מקום לכל מה שתרצה להציג.</p>
+  </div>
+
+  <script>
+    function openSidebar() {
+      document.getElementById("mySidebar").style.width = "250px";
+    }
+    function closeSidebar() {
+      document.getElementById("mySidebar").style.width = "0";
+    }
+  </script>
+
+</body>
+</html>
