@@ -48,10 +48,23 @@ mainBgSelect.style.backgroundImage = `url(${mainBackgrounds[mainBgCount]})`;
 formBgSelect.style.backgroundImage = `url(${formBackgrounds[formBgCount]})`;
 setMainBackground();
 setFormBackground();
-
-
-let colors = ["yellow", "green", "pink", "blue", "orange", "red"];
 let colorCount = 0;
+let colors = ["yellow", "green", "pink", "blue", "orange", "red"];
+let currentColor = 0;
+
+for (let i = 0; i < colors.length; i++) {
+  document.getElementById("c" + i).style.backgroundColor = colors[i];
+  if (i === 0) {
+    document.getElementById("c0").value = "✔";
+  }
+
+  document.getElementById("c" + i).addEventListener("click", (event) => {
+    document.getElementById("c" + currentColor).value = "";
+    event.target.value = "✔";
+    currentColor = i;
+  });
+}
+
 let currentFilter = "all"; // all/pending/completed
 let currentSearch = "";
 
@@ -65,12 +78,19 @@ let notes = JSON.parse(localStorage.getItem("notes")) || [];
 
 updateView();
 
+taskForm.addEventListener("reset", (event) => {
+  document.getElementById("c0").value = "✔";
+  currentColor=0;
+});
+
 settingIcon.addEventListener("click", () => {
   sideBar.style.display = "block";
 });
+
 closeSideBarBtn.addEventListener("click", () => {
   sideBar.style.display = "none";
 });
+
 mainBgSelect.addEventListener("click", () => {
   if (mainBgCount >= mainBackgrounds.length - 1) {
     mainBgCount = 0;
@@ -80,6 +100,7 @@ mainBgSelect.addEventListener("click", () => {
   mainBgSelect.style.backgroundImage = `url(${mainBackgrounds[mainBgCount]})`;
   setMainBackground();
 });
+
 formBgSelect.addEventListener("click", () => {
   if (formBgCount >= formBackgrounds.length - 1) {
     formBgCount = 0;
@@ -89,6 +110,7 @@ formBgSelect.addEventListener("click", () => {
   formBgSelect.style.backgroundImage = `url(${formBackgrounds[formBgCount]})`;
   setFormBackground();
 });
+
 searchInput.addEventListener("input", (e) => handleSearch(e));
 btnAll.addEventListener("click", (e) => setFilter("all", e));
 btnPending.addEventListener("click", (e) => setFilter("pending", e));
@@ -118,7 +140,7 @@ saveForm.addEventListener("click", () => {
     task: taskInput.value,
     date: dateInput.value,
     time: timeInput.value,
-    color: colors[colorCount],
+    color: colors[currentColor],
     completed: false,
   };
   notes.push(newNote);
@@ -149,15 +171,15 @@ resetForm.addEventListener("click", () => {
   taskInput.style.backgroundColor = "white";
 });
 
-colorPicker.addEventListener("click", () => {
-  if (colorCount === colors.length - 1) {
-    colorCount = 0;
-  } else {
-    colorCount++;
-  }
-  console.log("clicked" + colorCount);
-  colorPicker.style.backgroundColor = colors[colorCount];
-});
+// colorPicker.addEventListener("click", () => {
+//   if (colorCount === colors.length - 1) {
+//     colorCount = 0;
+//   } else {
+//     colorCount++;
+//   }
+//   console.log("clicked" + colorCount);
+//   colorPicker.style.backgroundColor = colors[colorCount];
+// });
 
 function saveNotesLocals() {
   localStorage.setItem("notes", JSON.stringify(notes));
@@ -240,7 +262,7 @@ function addNoteToView(note) {
     // newFlexItem.remove();   ??? במקום אפדייט וויו
     notes = notes.filter((n) => n.id !== note.id);
     console.log(notes);
-    history.push(note);
+    
     updateView();
     saveNotesLocals();
   });
@@ -300,11 +322,11 @@ function startRandomColorChange2(view) {
     view.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
   }, 1);
 }
-function setMainBackground(){
+function setMainBackground() {
   document.body.style.backgroundImage = `url(${mainBackgrounds[mainBgCount]})`;
-  localStorage.setItem("mainBgIndex" , parseInt(mainBgCount));
+  localStorage.setItem("mainBgIndex", parseInt(mainBgCount));
 }
-function setFormBackground(){
+function setFormBackground() {
   formContainer.style.backgroundImage = `url(${formBackgrounds[formBgCount]})`;
-  localStorage.setItem("formBgIndex" , parseInt(formBgCount));
+  localStorage.setItem("formBgIndex", parseInt(formBgCount));
 }
