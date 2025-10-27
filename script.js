@@ -1,4 +1,3 @@
-
 const btn = document.getElementById("addNoteBtn");
 const resetForm = document.getElementById("reset-form");
 const formContainer = document.getElementById("form-container");
@@ -23,17 +22,19 @@ const formBgSelect = document.getElementById("form-bg-select");
 
 //ניהול רקעים
 const PATH = "images/backgrounds/";
-let mainBackgrounds , formBackgrounds , colors;
+let mainBackgrounds, formBackgrounds, colors;
 let colorCount = 0;
 let currentColor = 0;
-let mainBgCount , formBgCount;
+let mainBgCount, formBgCount;
 // סינון וחיפש ברירת מחדל
 let currentFilter = "all"; // all/pending/completed
 let currentSearch = "";
 
 let x;
 let next = "red";
-let r = 0; let g = 0; let b = 0;
+let r = 0;
+let g = 0;
+let b = 0;
 // קבלת רשימת פתקים שמורה
 let notes = JSON.parse(localStorage.getItem("notes")) || [];
 
@@ -41,109 +42,171 @@ updateArreys();
 updateSettings();
 updateColorButtons();
 updateNotesView();
+handleListeners();
 
-taskForm.addEventListener("reset", (event) => {
-  updateColorButtons();
-  document.getElementById("c0").value = "✔";
-  currentColor=0;
-});
 
-settingIcon.addEventListener("click", () => {
-  sideBar.style.display = "block";
-});
+// פעולות ניהול
+function updateColorButtons() {
+  // הגדרת נראות כפתורי סימון צבע בטופס
+  for (let i = 0; i < colors.length; i++) {
+    document.getElementById("c" + i).style.backgroundColor = colors[i]; // שימוש בלולאה - קריאה לכל כפתור בשמו והגדרת צבע
+    document.getElementById("c" + i).value = "";
+    if (i === 0) {
+      document.getElementById("c0").value = "✔"; //סימון ברירת מחדל
+    }
 
-closeSideBarBtn.addEventListener("click", () => {
-  sideBar.style.display = "none";
-});
-
-mainBgSelect.addEventListener("click", () => {
-  if (mainBgCount >= mainBackgrounds.length - 1) {
-    mainBgCount = 0;
-  } else {
-    mainBgCount++;
+    // הגדרת מאזין לחיצה לכל כפתור סימון צבע בטופס
+    document.getElementById("c" + i).addEventListener("click", (event) => {
+      document.getElementById("c" + currentColor).value = "";
+      event.target.value = "✔";
+      currentColor = i;
+    });
   }
-  mainBgSelect.style.backgroundImage = `url(${mainBackgrounds[mainBgCount]})`;
-  setMainBackground();
-});
-
-formBgSelect.addEventListener("click", () => {
-  if (formBgCount >= formBackgrounds.length - 1) {
-    formBgCount = 0;
-  } else {
-    formBgCount++;
-  }
-  formBgSelect.style.backgroundImage = `url(${formBackgrounds[formBgCount]})`;
-  setFormBackground();
-});
-
-searchInput.addEventListener("input", (e) => handleSearch(e));
-btnAll.addEventListener("click", (e) => setFilter("all", e));
-btnPending.addEventListener("click", (e) => setFilter("pending", e));
-btnCompleted.addEventListener("click", (e) => setFilter("completed", e));
-
-saveForm.addEventListener("mouseover", function () {
-  startRandomColorChange2(saveForm);
-});
-
-saveForm.addEventListener("mouseleave", () => {
-  clearInterval(x);
-  saveForm.style.backgroundColor = "white";
-});
-
-saveForm.addEventListener("click", () => {
-  if (
-    !taskInput.value.trim() ||
-    !dateInput.value.trim() ||
-    !timeInput.value.trim()
-  ) {
-    return;
-  }
-
-  const noteId = Date.now();
-  let newNote = {
-    id: noteId,
-    task: taskInput.value,
-    date: dateInput.value,
-    time: timeInput.value,
-    color: colors[currentColor],
-    completed: false,
-  };
-  notes.push(newNote);
-  console.log(notes);
-
-  //  taskInput.value = "";
-  // dateInput.value = "";
-  // timeInput.value = "";
-  currentFilter = "all";
-  currentSearch = "";
-  searchInput.value = "";
-
-  btnAll.classList.add("active");
-  btnPending.classList.remove("active");
-  btnCompleted.classList.remove("active");
-  // addNoteToView(newNote);  האם אפשר להשאיר את זה במקום השורה מתחת?
-
-  updateNotesView();
-  saveNotesLocals();
-});
-
-resetForm.addEventListener("mouseover", () => markForm());
-
-resetForm.addEventListener("mouseleave", () => unMarkForm());
-
-resetForm.addEventListener("click", () => {
-  unMarkForm();
-  taskInput.style.backgroundColor = "white";
-});
-
-function saveNotesLocals() {
-  localStorage.setItem("notes", JSON.stringify(notes));
 }
+function updateArreys() {
+  colors = ["yellow", "green", "pink", "blue", "orange", "red"];
+
+  // מערך רקעים
+  mainBackgrounds = [
+    PATH + "corkboard.png",
+    PATH + "grid-wide.png",
+    PATH + "leaves.jpg",
+    PATH + "machine.jpg",
+    PATH + "wheat.jpg",
+    PATH + "mountains.jpg",
+    PATH + "garlic-dog.jpg",
+  ];
+
+  // מערך רקעי טופס
+  formBackgrounds = [
+    PATH + "lines.png",
+    PATH + "grid.png",
+    PATH + "lights.jpg",
+    PATH + "broadcast.jpg",
+  ];
+}
+function updateSettings() {
+  //קבלת נתוני הגדרות שמורים
+  mainBgCount = parseInt(localStorage.getItem("mainBgIndex")) || 0;
+  formBgCount = parseInt(localStorage.getItem("formBgIndex")) || 0;
+  //עדכון נראות
+  mainBgSelect.style.backgroundImage = `url(${mainBackgrounds[mainBgCount]})`;
+  formBgSelect.style.backgroundImage = `url(${formBackgrounds[formBgCount]})`;
+  setMainBackground();
+  setFormBackground();
+}
+function setMainBackground() {
+  document.body.style.backgroundImage = `url(${mainBackgrounds[mainBgCount]})`;
+  localStorage.setItem("mainBgIndex", parseInt(mainBgCount));
+}
+function setFormBackground() {
+  formContainer.style.backgroundImage = `url(${formBackgrounds[formBgCount]})`;
+  localStorage.setItem("formBgIndex", parseInt(formBgCount));
+}
+function handleListeners() {
+  // האזנות בטופס
+  taskForm.addEventListener("reset", (event) => {
+    updateColorButtons();
+    document.getElementById("c0").value = "✔";
+    currentColor = 0;
+  });
+
+  saveForm.addEventListener("mouseover", function () {
+    startRandomColorChange(saveForm);
+  });
+
+  saveForm.addEventListener("mouseleave", () => {
+    clearInterval(x);
+    saveForm.style.backgroundColor = "white";
+  });
+
+  saveForm.addEventListener("click", () => {
+    if (
+      !taskInput.value.trim() ||
+      !dateInput.value.trim() ||
+      !timeInput.value.trim()
+    ) {
+      return;
+    }
+
+    const noteId = Date.now();
+    let newNote = {
+      id: noteId,
+      task: taskInput.value,
+      date: dateInput.value,
+      time: timeInput.value,
+      color: colors[currentColor],
+      completed: false,
+    };
+    notes.push(newNote);
+    console.log(notes);
+
+    //  taskInput.value = "";
+    // dateInput.value = "";
+    // timeInput.value = "";
+    currentFilter = "all";
+    currentSearch = "";
+    searchInput.value = "";
+
+    btnAll.classList.add("active");
+    btnPending.classList.remove("active");
+    btnCompleted.classList.remove("active");
+    // addNoteToView(newNote);  האם אפשר להשאיר את זה במקום השורה מתחת?
+
+    updateNotesView();
+    saveNotesLocals();
+  });
+
+  resetForm.addEventListener("mouseover", () => markForm());
+
+  resetForm.addEventListener("mouseleave", () => unMarkForm());
+
+  resetForm.addEventListener("click", () => {
+    unMarkForm();
+    taskInput.style.backgroundColor = "white";
+  });
+
+  //האזנות בהגדרות
+  settingIcon.addEventListener("click", () => {
+    sideBar.style.display = "block";
+  });
+
+  closeSideBarBtn.addEventListener("click", () => {
+    sideBar.style.display = "none";
+  });
+
+  mainBgSelect.addEventListener("click", () => {
+    if (mainBgCount >= mainBackgrounds.length - 1) {
+      mainBgCount = 0;
+    } else {
+      mainBgCount++;
+    }
+    mainBgSelect.style.backgroundImage = `url(${mainBackgrounds[mainBgCount]})`;
+    setMainBackground();
+  });
+
+  formBgSelect.addEventListener("click", () => {
+    if (formBgCount >= formBackgrounds.length - 1) {
+      formBgCount = 0;
+    } else {
+      formBgCount++;
+    }
+    formBgSelect.style.backgroundImage = `url(${formBackgrounds[formBgCount]})`;
+    setFormBackground();
+  });
+
+  //האזנות בחיפוש
+  searchInput.addEventListener("input", (e) => handleSearch(e));
+  btnAll.addEventListener("click", (e) => setFilter("all", e));
+  btnPending.addEventListener("click", (e) => setFilter("pending", e));
+  btnCompleted.addEventListener("click", (e) => setFilter("completed", e));
+}
+
+// פונקציות החיפוש
 function handleSearch(event) {
   currentSearch = event.target.value.trim();
   updateNotesView();
 }
-
 function setFilter(filterType, element) {
   btnAll.classList.remove("active");
   btnPending.classList.remove("active");
@@ -154,7 +217,6 @@ function setFilter(filterType, element) {
   currentFilter = filterType;
   updateNotesView();
 }
-
 function getFilteredNotes() {
   let result = [...notes]; // העתק של המערך המקורי
 
@@ -174,6 +236,7 @@ function getFilteredNotes() {
   return result;
 }
 
+// פונקציות רשימת פתקים
 function updateNotesView() {
   const filteredNotes = getFilteredNotes();
 
@@ -182,7 +245,6 @@ function updateNotesView() {
     addNoteToView(element);
   });
 }
-
 function addNoteToView(note) {
   const newFlexItem = document.createElement("div");
   newFlexItem.className = "note";
@@ -217,7 +279,7 @@ function addNoteToView(note) {
     // newFlexItem.remove();   ??? במקום אפדייט וויו
     notes = notes.filter((n) => n.id !== note.id);
     console.log(notes);
-    
+
     updateNotesView();
     saveNotesLocals();
   });
@@ -232,16 +294,20 @@ function addNoteToView(note) {
   newFlexItem.append(deletIcon, completeIcon, paragraph, dateDiv, timeDiv);
   flexContainer.appendChild(newFlexItem);
 }
+function saveNotesLocals() {
+  localStorage.setItem("notes", JSON.stringify(notes));
+}
 
+// פעולות טופס
 function markForm() {
   taskForm.style.backgroundColor = "rgba(255, 0, 0, 0.45)";
 }
-
 function unMarkForm() {
   taskForm.style.backgroundColor = "rgba(255, 255, 255, 0)";
 }
 
-function startRandomColorChange2(view) {
+//כללי
+function startRandomColorChange(view) {
   clearInterval(x);
 
   x = setInterval(() => {
@@ -276,61 +342,4 @@ function startRandomColorChange2(view) {
 
     view.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
   }, 1);
-}
-function setMainBackground() {
-  document.body.style.backgroundImage = `url(${mainBackgrounds[mainBgCount]})`;
-  localStorage.setItem("mainBgIndex", parseInt(mainBgCount));
-}
-function setFormBackground() {
-  formContainer.style.backgroundImage = `url(${formBackgrounds[formBgCount]})`;
-  localStorage.setItem("formBgIndex", parseInt(formBgCount));
-}
-function updateColorButtons(){
-  // הגדרת נראות כפתורי סימון צבע בטופס
-for (let i = 0; i < colors.length; i++) {
-  document.getElementById("c" + i).style.backgroundColor = colors[i];  // שימוש בלולאה - קריאה לכל כפתור בשמו והגדרת צבע
-  document.getElementById('c' + i).value = '';
-  if (i === 0) {
-    document.getElementById("c0").value = "✔"; //סימון ברירת מחדל
-  }
-
-// הגדרת מאזין לחיצה לכל כפתור סימון צבע בטופס
-  document.getElementById("c" + i).addEventListener("click", (event) => {
-    document.getElementById("c" + currentColor).value = "";
-    event.target.value = "✔";
-    currentColor = i;
-  });
-}
-}
-function updateArreys(){
-  colors = ["yellow", "green", "pink", "blue", "orange", "red"];
-
-// מערך רקעים
- mainBackgrounds = [
-  PATH + "corkboard.png",
-  PATH + "grid-wide.png",
-  PATH + "leaves.jpg",
-  PATH + "machine.jpg",
-  PATH + "wheat.jpg",
-  PATH + "mountains.jpg",
-  PATH + "garlic-dog.jpg",
-];
-
-// מערך רקעי טופס 
- formBackgrounds = [
-  PATH + "lines.png",
-  PATH + "grid.png",
-  PATH + "lights.jpg",
-  PATH + "broadcast.jpg",
-];
-}
-function updateSettings(){
-//קבלת נתוני הגדרות שמורים
- mainBgCount = parseInt(localStorage.getItem("mainBgIndex")) || 0;
- formBgCount = parseInt(localStorage.getItem("formBgIndex")) || 0;
-//עדכון נראות
-mainBgSelect.style.backgroundImage = `url(${mainBackgrounds[mainBgCount]})`;
-formBgSelect.style.backgroundImage = `url(${formBackgrounds[formBgCount]})`;
-setMainBackground();
-setFormBackground();
 }
