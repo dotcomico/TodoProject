@@ -171,16 +171,6 @@ resetForm.addEventListener("click", () => {
   taskInput.style.backgroundColor = "white";
 });
 
-// colorPicker.addEventListener("click", () => {
-//   if (colorCount === colors.length - 1) {
-//     colorCount = 0;
-//   } else {
-//     colorCount++;
-//   }
-//   console.log("clicked" + colorCount);
-//   colorPicker.style.backgroundColor = colors[colorCount];
-// });
-
 function saveNotesLocals() {
   localStorage.setItem("notes", JSON.stringify(notes));
 }

@@ -4,8 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>index</title>
+    <title>Todo</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Paytone+One&display=swap" rel="stylesheet">
     <style>
         * {
             box-sizing: border-box;
@@ -14,92 +17,189 @@
         html,
         body {
             height: 100%;
-        }
-
-        html {
-            background-image: url(images/corkboard2.png);
             background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            padding: 0px;
+            margin: 0px;
         }
 
+        /* ניווט עליון */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 100%;
+            background-color: #ffffff00;
+            height: 60px;
+            padding: 6px 20px;
+        }
 
         h1 {
+            font-family: "Paytone One", sans-serif;
+            font-weight: 400;
+            font-style: normal;
             text-align: center;
             color: white;
-            font-size: 60px;
+            font-size: 45px;
             transition: 0.3s;
-            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            text-shadow: 0px 0px 15px black;
         }
 
         h1:hover {
-            transform: scaleY(1.7);
+            transform: scaleY(1.4);
         }
 
-        #historyBtn {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            border: 1px solid teal;
+        .top-bar i {
+            font-size: 32px;
+            color: white;
+            background-color: rgba(0, 0, 0, 0.244);
+            /* background-color: teal; */
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
-            width: 70px;
-            height: 70px;
-            background-color: white;
-            color: teal;
-
-            font-size: 40px;
-            transition: 0.2s;
-
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
         }
 
-        #historyBtn:hover {
-            transform: scale(1.1);
+        #setting-icon {
+            transition: 0.5s;
         }
 
-        #new-task-form {
-            display: grid;
-            grid-template-columns: 4fr 2fr;
-            padding: 5px;
+        #setting-icon:hover {
+            transform: rotate(180deg);
+        }
+
+        /* חלונית צד */
+        .side-bar {
+            height: 100%;
+            position: fixed;
+            max-width: 300px;
+            min-width: 200px;
+            background-color: #ffffff;
+            border-top-left-radius: 25px;
+            border-bottom-left-radius: 25px;
+            border-left: 1px solid rgb(152, 152, 152);
+            top: 0;
+            right: 0;
+            display: none;
+            padding: 8px;
             text-align: left;
-            width: 100%;
-            height: 100%;
+            z-index: 1000;
         }
 
-        form {
-            border-radius: 25px;
+        #close-side-bar-btn {
+            cursor: pointer;
+            font-size: 30px;
+            color: black;
+            transition: 0.3s;
+            margin: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            position: fixed;
         }
 
-        form div {
-            padding: 10px;
+        #close-side-bar-btn:hover {
+            font-size: 35px;
         }
 
-        #new-task-div {
-            background-image: url('images/formbg.jpg');
+        #main-bg-select {
+            position: relative;
+            background-color: rgb(231, 231, 231);
+            border: 1px solid rgb(98, 98, 98);
+            border-radius: 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 230px;
+            height: 150px;
             background-size: cover;
-            border: 1px, solid, black;
-            border-radius: 25px;
-            width: 50%;
-            margin: auto;
+            transition: 0.3s;
+            cursor: pointer;
         }
 
-        #text-form {
+        #main-bg-select:hover {
+            transform: scale(1.01);
+        }
+
+        #form-bg-select {
+            position: absolute;
+            background-color: gray;
+            border: 2px solid rgb(98, 98, 98);
+            border-radius: 16px;
+            width: 115px;
+            height: 60px;
+            background-size: cover;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        #form-bg-select:hover {
+            transform: scale(1.02);
+        }
+
+        /* טופס */
+        #form-container {
+            display: flex;
+            justify-content: center;
+            margin: auto;
+            background-size: cover;
+            border: 1px solid grey;
+            border-radius: 25px;
+            max-width: 780px;
+        }
+
+        #task-form {
+            border-radius: 25px;
+            padding: 15px;
+            text-align: left;
+            font-size: 20px;
             width: 100%;
             height: 100%;
-            font-size: 25px;
+        }
+
+        #form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 10px;
+            align-items: start;
+        }
+
+        #task-input {
             direction: auto;
             unicode-bidi: plaintext;
         }
 
+        .inputs {
+            background: white;
+            border: 2px solid lightgray;
+            border-radius: 12px;
+            padding: 10px;
+            font-size: 20px;
+        }
 
-        #date-picker,
-        #time-picker {
-            margin: 2px;
-            font-size: 22px;
+        label {
+            color: black;
+            margin-bottom: 5px;
+            display: block;
         }
 
         #color-picker {
             width: 40px;
             height: 40px;
             background-color: yellow;
-            border: 1px, solid, black;
+            border: 1px, solid, transparent;
             border-radius: 50%;
             margin: 3px;
             transition: 0.1s;
@@ -107,10 +207,36 @@
         }
 
         #color-picker:hover {
+            border: 2px, solid, rgb(255, 255, 255);
             transform: scale(1.1);
         }
 
+        .color {
+            width: 40px;
+            height: 40px;
+            border: 2px, solid, white;
+            border-radius: 50%;
+            margin: 3px;
+            transition: 0.1s;
+            cursor: pointer;
+        }
+
+        .color:hover {
+            border: 3px, solid, white;
+            transform: scale(1.3);
+            font-weight: bold;
+        }
+
         #reset-form {
+            height: 40px;
+            width: 9%;
+            min-width: 40px;
+            color: white;
+            background-color: red;
+            border-radius: 25px;
+            font-size: 25px;
+            text-align: center;
+            cursor: pointer;
             transition: 0.3s;
         }
 
@@ -119,6 +245,12 @@
         }
 
         #save-form {
+            height: 40px;
+            width: 90%;
+            border-radius: 25px;
+            font-size: 25px;
+            text-align: center;
+            cursor: pointer;
             transition: 0.3s;
         }
 
@@ -126,7 +258,38 @@
             transform: scale(1.01);
         }
 
+        /* חיפוש */
+        .controls-bar {
+            max-width: 800px;
+            margin: auto;
+            padding: 10px;
+            display: flex;
+            flex-direction: row;
+            gap: 10px;
+        }
 
+        #search-input {
+            width: 100%;
+            min-width: 200px;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: rgba(255, 255, 255, 0.378);
+            transform: translateY(-2px);
+        }
+
+        .filter-btn {
+            background: rgba(89, 89, 89, 0.412);
+            border: 1px solid black;
+            color: white;
+            padding: 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        /* פתקים */
         #flex-container {
             display: flex;
             flex-direction: row;
@@ -135,12 +298,10 @@
             width: fit-content;
             gap: 5px;
             padding: 10px;
-            /* background-color: aqua; */
         }
 
         .note {
             position: relative;
-            /* background-image: url('images/notebg.png'); */
             background-size: cover;
             height: 300px;
             width: 250px;
@@ -160,7 +321,6 @@
             overflow-wrap: break-word;
             direction: auto;
             unicode-bidi: plaintext;
-            /* text-align: center; */
             font-family: Arial, Helvetica, sans-serif;
         }
 
@@ -169,101 +329,204 @@
             font-size: 17px;
         }
 
-        .note i {
+        .note .delete-icon {
             position: absolute;
             top: 25px;
             right: 35px;
             opacity: 0;
 
             font-size: 24px;
-            line-height: 1;
+            height: 30px;
+            width: 30px;
             margin: 0;
             padding: 0;
             cursor: pointer;
         }
 
+        .note .vi {
+            position: absolute;
+            bottom: 30px;
+            right: 50px;
+            opacity: 0;
+
+            font-size: 24px;
+            height: 35px;
+            width: 35px;
+            margin: 0;
+            padding: 0;
+            cursor: pointer;
+
+            border: 1px solid black;
+            border-radius: 50%;
+            background-color: rgb(0, 198, 0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+        }
+
         .note:hover {
-            transform: scale(1.05);
+            transform: scale(1.03);
         }
 
         .note:hover i {
             opacity: 1;
         }
 
-        .historyCard {
-            position: fixed;
-            top: 20px;
-            right: 0px;
-
-            width: 20%;
-            height: 96%;
-            border: 2px solid teal;
-            background-color: white;
-            border-top-left-radius: 25px;
-            border-bottom-left-radius: 25px;
+        /* מרכוז פנימי לאמצע */
+        .center-flex {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: left;
+            font-weight: bold;
         }
 
-        .historyCard p {
-            text-align: center;
-            font-size: 25px;
-        }
+        @media (max-width: 768px) {
 
-        .historyCard hr {
-            width: 75%;
-            height: 3px;
-            background-color: black;
-            size: 2px;
-        }
+            #date-input,
+            #time-input {
+                border-radius: 12px;
+                padding: 10px;
+                font-size: 18px;
+            }
 
-        .historyContainer {
-            width: 100%;
-            padding: 10px;
+            .form-row {
+                gap: 2px;
+                flex-wrap: wrap;
+            }
+
+            #save-form {
+                max-width: 85%;
+                min-width: 50px;
+                font-size: 23px;
+            }
+
+            #reset-form {
+                font-size: 23px;
+            }
+
+            /* חיפוש */
+            .controls-bar {
+                margin: auto;
+                padding: 5px;
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+                row-gap: 5px;
+            }
+
+            #search-input {
+                width: 100%;
+                min-width: 100px;
+            }
+
+            /* פתקים */
+            #flex-container {
+                gap: 3px;
+                padding: 2px;
+            }
+
+            .note {
+                height: 190px;
+                width: 160px;
+                transition: 0.3s;
+                padding: 15px;
+                padding-top: 15px;
+                padding-right: 28px;
+            }
+
+            .note p {
+                width: 93%;
+                height: 69%;
+                font-size: 18px;
+                margin: auto;
+                margin-top: 20px;
+                margin-bottom: 8px;
+            }
+
+            .note div {
+                font-size: 12px;
+            }
+
+            .note .delete-icon {
+                top: 16px;
+                right: 15px;
+                font-size: 18px;
+                height: 25px;
+                width: 25px;
+            }
+
+            .note .vi {
+                bottom: 15px;
+                right: 20px;
+                font-size: 20px;
+                height: 28px;
+                width: 28px;
+            }
         }
     </style>
 </head>
 
 <body>
-    <h1 id="hading">Todo✏️</h1>
-
-
-    <div id="new-task-div">
-        <form action="" id="new-task-form">
-            <div>
-                <input type="text" name="text" placeholder="Type your mission..." id="text-form"> <br>
-            </div>
-            <div>
-                <input type="date" name="date" id="date-picker"> <br>
-                <input type="time" name="time" id="time-picker"> <br>
-                <input type="button" name="button" id="color-picker">
-
-            </div>
-            <div style="grid-column: span 3;">
-                <input type="button" name="button" value="Save" id="save-form"
-                    style="width: 90%; border-radius: 25px; font-size: 25px;">
-                <input type="reset" name="reset" id="reset-form" value="X"
-                    style="width: 9%; color: white; background-color: red; border-radius: 25px; font-size: 25px;">
-            </div>
-        </form>
+    <div class="top-bar">
+        <h1 id="hading">Todo✏️</h1>
+        <i class="bi bi-gear-fill" id="setting-icon"></i>
     </div>
 
-    <div>
-        <button id="historyBtn">🕜</button>
+    <div class="side-bar" id="side-bar">
+        <i class="bi bi-x-lg" id="close-side-bar-btn"></i>
+        <div style="margin: 100px;">
+            Backgrounds: <br>
+            <div class="center-flex">
+                <div id="main-bg-select"></div>
+                <div id="form-bg-select"></div>
+            </div>
+        </div>
     </div>
 
-    <div id="flex-container">
-        <!-- <div class="note">
-            <i class="bi bi-x-square-fill"></i>
-            <p>Lorem ipsum dolor si dsf sa ds a f asdf f fds afds a fd sds f f dafd f fd f ds adst amet
-                consdfdsafdffsdfectetur adipisicing elit. Fugiat totam vero voluptatum hic eum porro
-                consectetur? Sunt, molestiae voasd
-                ds dsfd f sdf df f s d fsdf df sd f sd ff sd f af sdf a df a sd fsd f ds fsdf d luptatem ab reiciendis
-                praesentium, architecto expedita laborum velit,
-                veniam doloremque amet delectus!</p>
-            <div class="date">15/09/2025</div>
-            <div class="time">14:30</div>
-        </div> -->
-    </div>
-    <script src="index-js.js"></script>
+
+    <main style="margin-top: 60px; padding: 10px;">
+        <div id="form-container">
+            <form action="" id="task-form">
+                <div id="form-group">
+                    <input type="text" name="text" placeholder="What's your task?" class="inputs" id="task-input">
+
+                    <div class="form-row">
+                        <input type="date" name="date" class="inputs" id="date-input"> <br>
+                        <input type="time" name="time" class="inputs" id="time-input"> <br>
+                    </div>
+                    <div>
+                        Color:
+                        <div class="form-row" id="colors">
+                            <input type="button" name="button" class="color" id="c0">
+                            <input type="button" name="button" class="color" id="c1">
+                            <input type="button" name="button" class="color" id="c2">
+                            <input type="button" name="button" class="color" id="c3">
+                            <input type="button" name="button" class="color" id="c4">
+                            <input type="button" name="button" class="color" id="c5">
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-top: 15px;">
+                    <input type="button" name="button" value="Save" id="save-form">
+                    <input type="reset" name="reset" id="reset-form" value="X">
+                </div>
+            </form>
+        </div>
+
+        <div class="controls-bar">
+            <input type="text" class="inputs search-input" id="search-input" placeholder="Search..."
+                fdprocessedid="ddtkp">
+            <button class="filter-btn active" id="all">All</button>
+            <button class="filter-btn" id="pending" fdprocessedid="dchpeh">Pending</button>
+            <button class="filter-btn" id="completed" fdprocessedid="ya0wzkp">Completed</button>
+        </div>
+
+        <div id="flex-container"></div>
+    </main>
+    <script src="index_script.js"></script>
 </body>
 
 </html>
