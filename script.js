@@ -44,7 +44,6 @@ updateColorButtons();
 updateNotesView();
 handleListeners();
 
-
 // פעולות ניהול
 function updateColorButtons() {
   // הגדרת נראות כפתורי סימון צבע בטופס
@@ -141,9 +140,11 @@ function handleListeners() {
     notes.push(newNote);
     console.log(notes);
 
-    //  taskInput.value = "";
-    // dateInput.value = "";
-    // timeInput.value = "";
+     taskInput.value = "";
+    dateInput.value = "";
+    timeInput.value = "";
+   
+
     currentFilter = "all";
     currentSearch = "";
     searchInput.value = "";
@@ -151,10 +152,9 @@ function handleListeners() {
     btnAll.classList.add("active");
     btnPending.classList.remove("active");
     btnCompleted.classList.remove("active");
-    // addNoteToView(newNote);  האם אפשר להשאיר את זה במקום השורה מתחת?
 
     updateNotesView();
-    saveNotesLocals();
+    saveNotesLocals();   
   });
 
   resetForm.addEventListener("mouseover", () => markForm());
