@@ -1,8 +1,3 @@
-/// להוסיף פריורטי?
-//להוסיף פופ אפ של הכרטיסיה?
-// להוסיף אנימציות לכניסה ויציאה
-// לעדכן נראות לפי םלקס בוקס
-// להוסיף תמיכה של קישורים מספרים וכו
 
 const btn = document.getElementById("addNoteBtn");
 const resetForm = document.getElementById("reset-form");
@@ -27,6 +22,8 @@ const mainBgSelect = document.getElementById("main-bg-select");
 const formBgSelect = document.getElementById("form-bg-select");
 
 const PATH = "images/backgrounds/";
+
+// מערך רקעים
 let mainBackgrounds = [
   PATH + "corkboard.png",
   PATH + "grid-wide.png",
@@ -36,43 +33,49 @@ let mainBackgrounds = [
   PATH + "mountains.jpg",
   PATH + "garlic-dog.jpg",
 ];
+
+// מערך רקעי טופס 
 let formBackgrounds = [
   PATH + "lines.png",
   PATH + "grid.png",
   PATH + "lights.jpg",
   PATH + "broadcast.jpg",
 ];
+
+//קבלת נתוני הגדרות שמורים
 let mainBgCount = parseInt(localStorage.getItem("mainBgIndex")) || 0;
 let formBgCount = parseInt(localStorage.getItem("formBgIndex")) || 0;
+//עדכון נראות
 mainBgSelect.style.backgroundImage = `url(${mainBackgrounds[mainBgCount]})`;
 formBgSelect.style.backgroundImage = `url(${formBackgrounds[formBgCount]})`;
 setMainBackground();
 setFormBackground();
+
 let colorCount = 0;
 let colors = ["yellow", "green", "pink", "blue", "orange", "red"];
 let currentColor = 0;
 
+// הגדרת נראות כפתורי סימון צבע בטופס
 for (let i = 0; i < colors.length; i++) {
-  document.getElementById("c" + i).style.backgroundColor = colors[i];
+  document.getElementById("c" + i).style.backgroundColor = colors[i];  // שימוש בלולאה - קריאה לכל כפתור בשמו והגדרת צבע
   if (i === 0) {
-    document.getElementById("c0").value = "✔";
+    document.getElementById("c0").value = "✔"; //סימון ברירת מחדל
   }
 
+// הגדרת מאזין לחיצה לכל כפתור סימון צבע בטופס
   document.getElementById("c" + i).addEventListener("click", (event) => {
     document.getElementById("c" + currentColor).value = "";
     event.target.value = "✔";
     currentColor = i;
   });
 }
-
+// סינון וחיפש ברירת מחדל
 let currentFilter = "all"; // all/pending/completed
 let currentSearch = "";
 
 let x;
 let next = "red";
-let r = 0;
-let g = 0;
-let b = 0;
+let r = 0; let g = 0; let b = 0;
 
 let notes = JSON.parse(localStorage.getItem("notes")) || [];
 
