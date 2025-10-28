@@ -29,32 +29,32 @@ let mainBgCount, formBgCount;
 let currentFilter = "all"; // all/pending/completed
 let currentSearch = "";
 
-let x;
+let colorChangeInterval;
 let next = "red";
 let r = 0;
 let g = 0;
 let b = 0;
 
 // שמות loacalStorage;
-const notesData = 'notes';
-const mainBgData = 'mainBgIndex';
-const formBgData = 'formBgIndex';
+const notesData = "notes";
+const mainBgData = "mainBgIndex";
+const formBgData = "formBgIndex";
 // קבלת רשימת פתקים שמורה
 let notes = JSON.parse(localStorage.getItem(notesData)) || [];
 
 updateArreys();
 updateSettings();
 updateColorButtons();
-initColorButtonsLesteners(); 
+initColorButtonsLesteners();
 updateNotesView();
 handleListeners();
-
 
 // פעולות ניהול
 
 function initColorButtonsLesteners() {
-  for (let i = 0; i < colors.length; i++) {    // (במקום לקרוא לכל אחד בנפרד) שימוש בלולאה
-    document.getElementById("c" + i).addEventListener("click", (event) => { 
+  for (let i = 0; i < colors.length; i++) {
+    // (במקום לקרוא לכל אחד בנפרד) שימוש בלולאה
+    document.getElementById("c" + i).addEventListener("click", (event) => {
       document.getElementById("c" + currentColor).value = "";
       event.target.value = "✔";
       currentColor = i;
@@ -63,7 +63,8 @@ function initColorButtonsLesteners() {
 }
 
 function updateColorButtons() {
-  for (let i = 0; i < colors.length; i++) {    // (במקום לקרוא לכל אחד בנפרד) שימוש בלולאה
+  for (let i = 0; i < colors.length; i++) {
+    // (במקום לקרוא לכל אחד בנפרד) שימוש בלולאה
     document.getElementById("c" + i).style.backgroundColor = colors[i];
     document.getElementById("c" + i).value = "";
   }
@@ -114,11 +115,13 @@ function setFormBackground() {
 }
 function handleListeners() {
   // האזנות בטופס
-taskForm.addEventListener("reset", () => updateColorButtons());
-saveForm.addEventListener("mouseover", () => startRandomColorChange(saveForm));
+  taskForm.addEventListener("reset", () => updateColorButtons());
+  saveForm.addEventListener("mouseover", () =>
+    startRandomColorChange(saveForm)
+  );
 
   saveForm.addEventListener("mouseleave", () => {
-    clearInterval(x);
+    clearInterval(colorChangeInterval);
     saveForm.style.backgroundColor = "white";
   });
   saveForm.addEventListener("click", () => {
@@ -146,14 +149,14 @@ saveForm.addEventListener("mouseover", () => startRandomColorChange(saveForm));
     taskInput.value = "";
     dateInput.value = "";
     timeInput.value = "";
-    
+
     resetSearchBar();
 
     updateNotesView();
-    saveNotesLocals();   
+    saveNotesLocals();
   });
-resetForm.addEventListener("mouseover", () => markForm());
-resetForm.addEventListener("mouseleave", () => unMarkForm());
+  resetForm.addEventListener("mouseover", () => markForm());
+  resetForm.addEventListener("mouseleave", () => unMarkForm());
 
   resetForm.addEventListener("click", () => {
     unMarkForm();
@@ -196,14 +199,14 @@ resetForm.addEventListener("mouseleave", () => unMarkForm());
   btnCompleted.addEventListener("click", (e) => setFilter("completed", e));
 }
 
-// פונקציות חיפוש וסינון 
-function resetSearchBar(){
+// פונקציות חיפוש וסינון
+function resetSearchBar() {
   currentFilter = "all";
-    currentSearch = "";
-    searchInput.value = "";
-    btnAll.classList.add("active");
-    btnPending.classList.remove("active");
-    btnCompleted.classList.remove("active");
+  currentSearch = "";
+  searchInput.value = "";
+  btnAll.classList.add("active");
+  btnPending.classList.remove("active");
+  btnCompleted.classList.remove("active");
 }
 function handleSearch(event) {
   currentSearch = event.target.value.trim();
@@ -237,8 +240,6 @@ function getFilteredNotes() {
 
   return filtereds;
 }
-
-
 
 // פונקציות רשימת פתקים
 function updateNotesView() {
@@ -274,9 +275,9 @@ function addNoteToView(note) {
   const dateDiv = document.createElement("div");
   const timeDiv = document.createElement("div");
 
-paragraph.textContent = note.task; 
-dateDiv.textContent = note.date;
-timeDiv.textContent = note.time;
+  paragraph.textContent = note.task;
+  dateDiv.textContent = note.date;
+  timeDiv.textContent = note.time;
 
   deletIcon.addEventListener("click", () => {
     notes = notes.filter((n) => n.id !== note.id);
@@ -310,9 +311,9 @@ function unMarkForm() {
 
 //כללי
 function startRandomColorChange(view) {
-  clearInterval(x);
+  clearInterval(colorChangeInterval);
 
-  x = setInterval(() => {
+  colorChangeInterval = setInterval(() => {
     if (next === "red") {
       r++;
       if (b > 0) {
