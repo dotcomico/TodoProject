@@ -30,7 +30,7 @@ let currentFilter = "all"; // all/pending/completed
 let currentSearch = "";
 
 let colorChangeInterval;
-let next = "red";
+let nextColor = "red";
 let r = 0;
 let g = 0;
 let b = 0;
@@ -42,15 +42,17 @@ const formBgData = "formBgIndex";
 // קבלת רשימת פתקים שמורה
 let notes = JSON.parse(localStorage.getItem(notesData)) || [];
 
-updateArreys();
+
+updateArrays();
 updateSettings();
 updateColorButtons();
 initColorButtonsLesteners();
 updateNotesView();
 handleListeners();
 
-// פעולות ניהול
 
+
+// פעולות ניהול
 function initColorButtonsLesteners() {
   for (let i = 0; i < colors.length; i++) {
     // (במקום לקרוא לכל אחד בנפרד) שימוש בלולאה
@@ -61,7 +63,6 @@ function initColorButtonsLesteners() {
     });
   }
 }
-
 function updateColorButtons() {
   for (let i = 0; i < colors.length; i++) {
     // (במקום לקרוא לכל אחד בנפרד) שימוש בלולאה
@@ -71,8 +72,7 @@ function updateColorButtons() {
   document.getElementById("c0").value = "✔";
   currentColor = 0;
 }
-
-function updateArreys() {
+function updateArrays() {
   colors = ["yellow", "green", "pink", "blue", "orange", "red"];
 
   // מערך רקעים
@@ -222,7 +222,6 @@ function setFilter(filterType, element) {
   currentFilter = filterType;
   updateNotesView();
 }
-
 function getFilteredNotes() {
   let filtereds = notes;
 
@@ -314,19 +313,19 @@ function startRandomColorChange(view) {
   clearInterval(colorChangeInterval);
 
   colorChangeInterval = setInterval(() => {
-    if (next === "red") {
+    if (nextColor === "red") {
       r++;
       if (b > 0) {
         b--;
       }
     }
-    if (next === "yellow") {
+    if (nextColor === "yellow") {
       g++;
       if (r > 0) {
         r--;
       }
     }
-    if (next === "blue") {
+    if (nextColor === "blue") {
       b++;
       if (g > 0) {
         g--;
@@ -334,13 +333,13 @@ function startRandomColorChange(view) {
     }
 
     if (r === 255) {
-      next = "yellow";
+      nextColor = "yellow";
     }
     if (g === 255) {
-      next = "blue";
+      nextColor = "blue";
     }
     if (b === 255) {
-      next = "red";
+      nextColor = "red";
     }
 
     view.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
