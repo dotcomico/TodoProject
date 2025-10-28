@@ -60,6 +60,7 @@ h1:hover {
   transform: rotate(180deg);
 }
 
+
 /* חלונית צד (הגדרות)*/
 .side-bar {
   height: 100%;
@@ -129,6 +130,7 @@ h1:hover {
   transform: scale(1.02);
 }
 
+
 /* טופס */
 #form-container {
   display: flex;
@@ -158,7 +160,7 @@ h1:hover {
 .form-row {
   display: flex;
   align-items: start;
-  gap: 10px;
+  gap: 7px;
 }
 
 #task-input {
@@ -243,6 +245,7 @@ label {
   transform: scale(1.01);
 }
 
+
 /* חיפוש וסינון פתקים */
 .controls-bar {
   max-width: 800px;
@@ -274,6 +277,7 @@ label {
   transition: 0.3s;
 }
 
+
 /* פתקים */
 #flex-container {
   display: flex;
@@ -283,6 +287,10 @@ label {
   width: fit-content;
   gap: 5px;
   padding: 10px;
+   font-size: 40px;
+    color: white;
+    font-family:"Paytone One", sans-serif;
+
 }
 
 .note {
@@ -294,11 +302,12 @@ label {
   padding: 15px;
   padding-top: 35px;
   padding-right: 20px;
+  color: black;
 }
 
 .note p {
   width: 93%;
-  height: 69%;
+  height: 64%;
   font-size: 23px;
   overflow-y: auto;
   overflow-x: hidden;
@@ -306,7 +315,6 @@ label {
   overflow-wrap: break-word;
   direction: auto;
   unicode-bidi: plaintext;
-  font-family: Arial, Helvetica, sans-serif;
 }
 
 .note div {

@@ -70,7 +70,7 @@ function updateColorButtons() {
   currentColor = 0;
 }
 function updateArrays() {
-  colors = ["yellow", "green", "pink", "blue", "orange", "red"];
+  colors = ["yellow", "palegreen", "pink", "deepskyblue", "orange", "red"];
 
   // מערך רקעים
   mainBackgrounds = [
@@ -241,9 +241,13 @@ function getFilteredNotes() {
 function updateNotesView() {
   const filteredNotes = getFilteredNotes();
   flexContainer.innerHTML = "";
-  filteredNotes.forEach((element) => {
-    addNoteToView(element);
-  });
+  if(filteredNotes.length == 0){
+    flexContainer.textContent = '● Probably time to add some notes📝';
+ } else {
+    filteredNotes.forEach((element) => {
+      addNoteToView(element);
+    });
+  }
 }
 function addNoteToView(note) {
   const newFlexItem = document.createElement("div");
