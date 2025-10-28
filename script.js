@@ -240,9 +240,9 @@ function getFilteredNotes() {
 function updateNotesView() {
   const filteredNotes = getFilteredNotes();
   flexContainer.innerHTML = "";
-  if(filteredNotes.length === 0){
-    flexContainer.textContent = '● Probably time to add some notes📝';
- } else {
+  if (filteredNotes.length === 0) {
+    flexContainer.textContent = "● Probably time to add some notes📝";
+  } else {
     filteredNotes.forEach((element) => {
       addNoteToView(element);
     });
