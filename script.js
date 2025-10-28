@@ -45,27 +45,30 @@ let notes = JSON.parse(localStorage.getItem(notesData)) || [];
 updateArreys();
 updateSettings();
 updateColorButtons();
+initColorButtonsLesteners(); 
 updateNotesView();
 handleListeners();
 
-// פעולות ניהול
-function updateColorButtons() {
-  // הגדרת נראות כפתורי סימון צבע
-  for (let i = 0; i < colors.length; i++) {
-    document.getElementById("c" + i).style.backgroundColor = colors[i]; // (במקום לקרוא לכל אחד בנפרד) שימוש בלולאה - קריאה לכל כפתור בשמו והגדרת צבע
-    document.getElementById("c" + i).value = ""; // איפוס סימון
-    if (i === 0) {
-      document.getElementById("c0").value = "✔"; // סימון ברירת מחדל
-      currentColor = 0;
-    }
 
-    // הגדרת מאזין לחיצה לכל כפתור סימון צבע
-    document.getElementById("c" + i).addEventListener("click", (event) => {
+// פעולות ניהול
+
+function initColorButtonsLesteners() {
+  for (let i = 0; i < colors.length; i++) {    // (במקום לקרוא לכל אחד בנפרד) שימוש בלולאה
+    document.getElementById("c" + i).addEventListener("click", (event) => { 
       document.getElementById("c" + currentColor).value = "";
       event.target.value = "✔";
       currentColor = i;
     });
   }
+}
+
+function updateColorButtons() {
+  for (let i = 0; i < colors.length; i++) {    // (במקום לקרוא לכל אחד בנפרד) שימוש בלולאה
+    document.getElementById("c" + i).style.backgroundColor = colors[i];
+    document.getElementById("c" + i).value = "";
+  }
+  document.getElementById("c0").value = "✔";
+  currentColor = 0;
 }
 
 function updateArreys() {
@@ -111,15 +114,13 @@ function setFormBackground() {
 }
 function handleListeners() {
   // האזנות בטופס
-  taskForm.addEventListener("reset", updateColorButtons());
-
-  saveForm.addEventListener("mouseover", startRandomColorChange(saveForm));
+taskForm.addEventListener("reset", () => updateColorButtons());
+saveForm.addEventListener("mouseover", () => startRandomColorChange(saveForm));
 
   saveForm.addEventListener("mouseleave", () => {
     clearInterval(x);
     saveForm.style.backgroundColor = "white";
   });
-
   saveForm.addEventListener("click", () => {
     if (
       !taskInput.value.trim() ||
@@ -151,10 +152,8 @@ function handleListeners() {
     updateNotesView();
     saveNotesLocals();   
   });
-
-  resetForm.addEventListener("mouseover", markForm());
-
-  resetForm.addEventListener("mouseleave", unMarkForm());
+resetForm.addEventListener("mouseover", () => markForm());
+resetForm.addEventListener("mouseleave", () => unMarkForm());
 
   resetForm.addEventListener("click", () => {
     unMarkForm();
@@ -275,12 +274,11 @@ function addNoteToView(note) {
   const dateDiv = document.createElement("div");
   const timeDiv = document.createElement("div");
 
-  paragraph.innerHTML = note.task;
-  dateDiv.innerHTML = note.date;
-  timeDiv.innerHTML = note.time;
+paragraph.textContent = note.task; 
+dateDiv.textContent = note.date;
+timeDiv.textContent = note.time;
 
   deletIcon.addEventListener("click", () => {
-    // newFlexItem.remove();   ??? במקום אפדייט וויו
     notes = notes.filter((n) => n.id !== note.id);
     console.log(notes);
 
@@ -291,7 +289,7 @@ function addNoteToView(note) {
   completeIcon.addEventListener("click", () => {
     let temp = !note.completed;
     note.completed = temp;
-    updateNotesView(); //?האם אפשר להוסיף קלאס של קומפליט במקום לעדכן הכל?
+    updateNotesView();
     saveNotesLocals();
   });
 
@@ -345,5 +343,5 @@ function startRandomColorChange(view) {
     }
 
     view.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
-  }, 1);
+  }, 10);
 }
