@@ -1,4 +1,4 @@
-const btn = document.getElementById("addNoteBtn");
+const addNoteBtn = document.getElementById("addNoteBtn");
 const resetForm = document.getElementById("reset-form");
 const formContainer = document.getElementById("form-container");
 const taskForm = document.getElementById("task-form");
@@ -19,7 +19,6 @@ const sideBar = document.getElementById("side-bar");
 const closeSideBarBtn = document.getElementById("close-side-bar-btn");
 const mainBgSelect = document.getElementById("main-bg-select");
 const formBgSelect = document.getElementById("form-bg-select");
-
 //ניהול רקעים
 const PATH = "images/backgrounds/";
 let mainBackgrounds, formBackgrounds, colors;
@@ -35,8 +34,13 @@ let next = "red";
 let r = 0;
 let g = 0;
 let b = 0;
+
+// שמות loacalStorage;
+const notesData = 'notes';
+const mainBgData = 'mainBgIndex';
+const formBgData = 'formBgIndex';
 // קבלת רשימת פתקים שמורה
-let notes = JSON.parse(localStorage.getItem("notes")) || [];
+let notes = JSON.parse(localStorage.getItem(notesData)) || [];
 
 updateArreys();
 updateSettings();
@@ -46,15 +50,16 @@ handleListeners();
 
 // פעולות ניהול
 function updateColorButtons() {
-  // הגדרת נראות כפתורי סימון צבע בטופס
+  // הגדרת נראות כפתורי סימון צבע
   for (let i = 0; i < colors.length; i++) {
-    document.getElementById("c" + i).style.backgroundColor = colors[i]; // שימוש בלולאה - קריאה לכל כפתור בשמו והגדרת צבע
-    document.getElementById("c" + i).value = "";
+    document.getElementById("c" + i).style.backgroundColor = colors[i]; // (במקום לקרוא לכל אחד בנפרד) שימוש בלולאה - קריאה לכל כפתור בשמו והגדרת צבע
+    document.getElementById("c" + i).value = ""; // איפוס סימון
     if (i === 0) {
-      document.getElementById("c0").value = "✔"; //סימון ברירת מחדל
+      document.getElementById("c0").value = "✔"; // סימון ברירת מחדל
+      currentColor = 0;
     }
 
-    // הגדרת מאזין לחיצה לכל כפתור סימון צבע בטופס
+    // הגדרת מאזין לחיצה לכל כפתור סימון צבע
     document.getElementById("c" + i).addEventListener("click", (event) => {
       document.getElementById("c" + currentColor).value = "";
       event.target.value = "✔";
@@ -62,6 +67,7 @@ function updateColorButtons() {
     });
   }
 }
+
 function updateArreys() {
   colors = ["yellow", "green", "pink", "blue", "orange", "red"];
 
@@ -86,33 +92,28 @@ function updateArreys() {
 }
 function updateSettings() {
   //קבלת נתוני הגדרות שמורים
-  mainBgCount = parseInt(localStorage.getItem("mainBgIndex")) || 0;
-  formBgCount = parseInt(localStorage.getItem("formBgIndex")) || 0;
+  mainBgCount = parseInt(localStorage.getItem(mainBgData)) || 0;
+  formBgCount = parseInt(localStorage.getItem(formBgData)) || 0;
   //עדכון נראות
   mainBgSelect.style.backgroundImage = `url(${mainBackgrounds[mainBgCount]})`;
   formBgSelect.style.backgroundImage = `url(${formBackgrounds[formBgCount]})`;
+
   setMainBackground();
   setFormBackground();
 }
 function setMainBackground() {
   document.body.style.backgroundImage = `url(${mainBackgrounds[mainBgCount]})`;
-  localStorage.setItem("mainBgIndex", parseInt(mainBgCount));
+  localStorage.setItem(mainBgData, parseInt(mainBgCount));
 }
 function setFormBackground() {
   formContainer.style.backgroundImage = `url(${formBackgrounds[formBgCount]})`;
-  localStorage.setItem("formBgIndex", parseInt(formBgCount));
+  localStorage.setItem(formBgData, parseInt(formBgCount));
 }
 function handleListeners() {
   // האזנות בטופס
-  taskForm.addEventListener("reset", (event) => {
-    updateColorButtons();
-    document.getElementById("c0").value = "✔";
-    currentColor = 0;
-  });
+  taskForm.addEventListener("reset", updateColorButtons());
 
-  saveForm.addEventListener("mouseover", function () {
-    startRandomColorChange(saveForm);
-  });
+  saveForm.addEventListener("mouseover", startRandomColorChange(saveForm));
 
   saveForm.addEventListener("mouseleave", () => {
     clearInterval(x);
@@ -140,26 +141,20 @@ function handleListeners() {
     notes.push(newNote);
     console.log(notes);
 
-     taskInput.value = "";
+    //איפוס קלט
+    taskInput.value = "";
     dateInput.value = "";
     timeInput.value = "";
-   
-
-    currentFilter = "all";
-    currentSearch = "";
-    searchInput.value = "";
-
-    btnAll.classList.add("active");
-    btnPending.classList.remove("active");
-    btnCompleted.classList.remove("active");
+    
+    resetSearchBar();
 
     updateNotesView();
     saveNotesLocals();   
   });
 
-  resetForm.addEventListener("mouseover", () => markForm());
+  resetForm.addEventListener("mouseover", markForm());
 
-  resetForm.addEventListener("mouseleave", () => unMarkForm());
+  resetForm.addEventListener("mouseleave", unMarkForm());
 
   resetForm.addEventListener("click", () => {
     unMarkForm();
@@ -202,7 +197,15 @@ function handleListeners() {
   btnCompleted.addEventListener("click", (e) => setFilter("completed", e));
 }
 
-// פונקציות החיפוש
+// פונקציות חיפוש וסינון 
+function resetSearchBar(){
+  currentFilter = "all";
+    currentSearch = "";
+    searchInput.value = "";
+    btnAll.classList.add("active");
+    btnPending.classList.remove("active");
+    btnCompleted.classList.remove("active");
+}
 function handleSearch(event) {
   currentSearch = event.target.value.trim();
   updateNotesView();
@@ -217,29 +220,30 @@ function setFilter(filterType, element) {
   currentFilter = filterType;
   updateNotesView();
 }
+
 function getFilteredNotes() {
-  let result = [...notes]; // העתק של המערך המקורי
+  let filtereds = notes;
 
   if (currentFilter === "pending") {
-    result = result.filter((note) => !note.completed);
+    filtereds = filtereds.filter((note) => !note.completed);
   } else if (currentFilter === "completed") {
-    result = result.filter((note) => note.completed);
+    filtereds = filtereds.filter((note) => note.completed);
   }
 
-  // חיפוש
   if (currentSearch !== "") {
-    result = result.filter((note) =>
+    filtereds = filtereds.filter((note) =>
       note.task.toLowerCase().includes(currentSearch.toLowerCase())
     );
   }
 
-  return result;
+  return filtereds;
 }
+
+
 
 // פונקציות רשימת פתקים
 function updateNotesView() {
   const filteredNotes = getFilteredNotes();
-
   flexContainer.innerHTML = "";
   filteredNotes.forEach((element) => {
     addNoteToView(element);
@@ -295,7 +299,7 @@ function addNoteToView(note) {
   flexContainer.appendChild(newFlexItem);
 }
 function saveNotesLocals() {
-  localStorage.setItem("notes", JSON.stringify(notes));
+  localStorage.setItem(notesData, JSON.stringify(notes));
 }
 
 // פעולות טופס
