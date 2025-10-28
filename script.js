@@ -42,15 +42,12 @@ const formBgData = "formBgIndex";
 // קבלת רשימת פתקים שמורה
 let notes = JSON.parse(localStorage.getItem(notesData)) || [];
 
-
 updateArrays();
 updateSettings();
 updateColorButtons();
 initColorButtonsLesteners();
 updateNotesView();
 handleListeners();
-
-
 
 // פעולות ניהול
 function initColorButtonsLesteners() {
