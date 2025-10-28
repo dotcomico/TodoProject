@@ -79,7 +79,6 @@ function updateArrays() {
     PATH + "leaves.jpg",
     PATH + "machine.jpg",
     PATH + "wheat.jpg",
-    PATH + "mountains.jpg",
     PATH + "garlic-dog.jpg",
   ];
 
@@ -241,7 +240,7 @@ function getFilteredNotes() {
 function updateNotesView() {
   const filteredNotes = getFilteredNotes();
   flexContainer.innerHTML = "";
-  if(filteredNotes.length == 0){
+  if(filteredNotes.length === 0){
     flexContainer.textContent = '● Probably time to add some notes📝';
  } else {
     filteredNotes.forEach((element) => {
